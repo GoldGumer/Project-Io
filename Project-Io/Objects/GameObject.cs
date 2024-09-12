@@ -6,7 +6,7 @@ using Components;
 
 namespace Objects
 {
-    internal abstract class GameObject
+    internal class GameObject
     {
         public string name { get; set; }
         protected Vector2 position;
@@ -14,6 +14,8 @@ namespace Objects
 
         public GameObject(string _name = "DefaultGameObject", Vector2 _position = default)
         {
+            components = new List<Component>();
+
             name = _name;
             if (_position == default) 
             { 
@@ -53,5 +55,7 @@ namespace Objects
                 }
             }
         }
+
+        public Vector2 GetPosition() { return position; }
     }
 }

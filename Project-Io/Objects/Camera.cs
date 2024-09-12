@@ -22,10 +22,14 @@ namespace Objects
     internal class Camera : GameObject
     {
         protected GraphicsDeviceManager grDeviceManager;
+        protected Vector2 viewSize;
+        public Color backgroundColour;
 
         public Camera(string _name = "DefaultCameraObject", Vector2 _position = default, GraphicsDeviceManager graphics = default, Vector2Int screenSize = default) : base(_name, _position)
         {
             grDeviceManager = graphics;
+
+            viewSize = new Vector2(screenSize.x, screenSize.y);
 
             UpdateBackBufferSize(screenSize);
         }
@@ -38,5 +42,9 @@ namespace Objects
             grDeviceManager.ApplyChanges();
         }
 
+        public void Draw()
+        {
+
+        }
     }
 }
