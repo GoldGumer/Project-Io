@@ -1,10 +1,9 @@
 ﻿using Microsoft.Xna.Framework;
 using Objects;
+using Components;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Project_Io.Scenes
 {
@@ -19,18 +18,24 @@ namespace Project_Io.Scenes
             name = _name;
             id = _id;
             gameObjects = new List<GameObject>();
+
+            foreach (GameObject gameObject in gameObjects) 
+            {
+                gameObject.scene = this;
+            }
         }
 
-        public void Update()
+        public void Update(GameTime gameTime)
         {
             foreach (GameObject gameObject in gameObjects) 
             { 
-                gameObject.Update();
+                gameObject.Update(gameTime);
             }
         }
 
         public void AddGameObject(GameObject gameObject)
         {
+            gameObject.scene = this;
             gameObjects.Add(gameObject);
         }
 
@@ -39,42 +44,44 @@ namespace Project_Io.Scenes
             gameObjects.Remove(gameObject);
         }
 
-        public bool FindGameObject(Vector2 position, out GameObject gameObjectFound)
+        public GameObject FindGameObjectWithComponent<T>()
         {
-            gameObjectFound = null;
-
-            foreach (GameObject gameObject in gameObjects) 
+            foreach (GameObject gameObject in gameObjects)
             {
-                if (gameObject.GetPosition() == position)
+                if (gameObject.FindComponent<T>() != null && !gameObject.FindComponent<T>().Equals(default(T)))
                 {
-                    gameObjectFound = gameObject;
-
-                    return true;
+                    return gameObject;
                 }
             }
 
-            return false;
+            return default;
         }
 
-        public bool FindGameObject<T>(out T gameObjectFound)
+        public List<GameObject> FindGameObjectsWithComponent<T>()
         {
-            gameObjectFound = default(T);
+            List<GameObject> gameObjectsToReturn = new List<GameObject>();
 
-            List<T> typeList = FindGameObjects<T>();
-
-            if (typeList.Count > 0)
+            foreach (GameObject gameObject in gameObjects)
             {
-                gameObjectFound = typeList[0];
-
-                return true;
+                if (gameObject.FindComponent<T>() != null && !gameObject.FindComponent<T>().Equals(default(T)))
+                {
+                    gameObjectsToReturn.Add(gameObject);
+                }
             }
 
-            return false;
+            return gameObjectsToReturn;
+        }
+
+        public T FindGameObject<T>()
+        {
+            return gameObjects.OfType<T>().FirstOrDefault();
         }
 
         public List<T> FindGameObjects<T>()
         {
             return gameObjects.OfType<T>().ToList();
         }
+
+        public List<GameObject> GetGameObjects() { return gameObjects; }
     }
 }
