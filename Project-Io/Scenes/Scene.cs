@@ -17,7 +17,12 @@ namespace Scenes
         [JsonProperty("id")]
         public int id { get; set; }
         [JsonProperty("gameObjects")]
-        public List<GameObject> gameObjects { get; }
+        public List<GameObject> gameObjects { get; set; }
+
+        public Scene()
+        {
+
+        }
 
         public Scene(string _name = "DefaultScene", int _id = -1)
         {

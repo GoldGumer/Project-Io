@@ -14,6 +14,11 @@ namespace Components
         [JsonProperty("font")]
         public SpriteFont font { get; set; }
 
+        public Text()
+        {
+
+        }
+
         public Text(string _text = "DEFAULT", SpriteFont _font = default)
         {
             text = _text;

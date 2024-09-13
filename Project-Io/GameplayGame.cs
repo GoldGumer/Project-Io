@@ -50,6 +50,8 @@ namespace Project_Io
         public GameplayGame()
         {
             screenSize = new Point(1920, 1080);
+
+            
             grDeviceManager = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -57,7 +59,11 @@ namespace Project_Io
 
         protected override void Initialize()
         {
-            sceneManager = new SceneManager();
+            Scene scene = new Scene("StartScene", 0);
+            scene.AddGameObject(new GameObject("MainCamera", new List<Component>() { new Camera(new Vector2(16, 9), Color.Black), new Transform(Vector2.Zero) }));
+
+            sceneManager = new SceneManager(0, new List<Scene>() { scene });
+
 
             base.Initialize();
         }
@@ -70,6 +76,9 @@ namespace Project_Io
 
             camera.grDeviceManager = grDeviceManager;
             camera.graphicsDevice = GraphicsDevice;
+            camera.spriteBatch = new SpriteBatch(GraphicsDevice);
+
+            camera.UpdateBackBufferSize(screenSize);
 
 
             KeyboardHandler.Start();
@@ -87,7 +96,7 @@ namespace Project_Io
                 sceneManager.SaveScenesToJSON(Path.Combine(Content.RootDirectory, @"JSON Files\Scenes.json"));
             }
 
-            sceneManager.UpdateCurrentScene();
+            sceneManager.GetCurrentScene().Update();
 
             base.Update(gameTime);
         }

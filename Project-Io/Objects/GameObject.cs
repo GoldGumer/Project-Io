@@ -19,6 +19,11 @@ namespace Objects
         [JsonProperty("components")]
         protected List<Component> components { get; set; }
 
+        public GameObject()
+        {
+
+        }
+
         public GameObject(string _name = "DefaultGameObject", List<Component> _components = default)
         {
             components = _components;

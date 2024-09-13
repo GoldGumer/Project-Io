@@ -14,6 +14,11 @@ namespace Components
         [JsonProperty("drawOrder")]
         public int drawOrder { get; set; }
 
+        public Transform()
+        {
+
+        }
+
         public Transform(Vector2 _position = default, int _drawOrder = 0)
         {
             position = _position;

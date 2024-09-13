@@ -22,11 +22,16 @@ namespace Components
         [JsonProperty("backgroundColour")]
         public Color backgroundColour { get; set; }
 
-        public Camera(Point screenSize = default, Vector2 _viewSize = default)
+        public Camera()
+        {
+
+        }
+
+        public Camera(Vector2 _viewSize = default, Color _backgroundColour = default)
         {
             viewSize = new Vector2(16, 9);
 
-            UpdateBackBufferSize(screenSize);
+            backgroundColour = _backgroundColour;
         }
 
 

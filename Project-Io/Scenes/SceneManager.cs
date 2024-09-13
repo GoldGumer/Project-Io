@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Security.Principal;
 using System.Text;
 using System.Threading.Tasks;
 
@@ -40,11 +41,6 @@ namespace Scenes
             currentSceneID = scenes.Find(scene => scene.id == sceneID).id;
         }
 
-        public void UpdateCurrentScene()
-        {
-            GetCurrentScene().Update();
-        }
-
         public void AddScene(Scene scene)
         {
             scenes.Add(scene);
@@ -57,12 +53,15 @@ namespace Scenes
 
         public void SaveScenesToJSON(string path)
         {
-            using (StreamWriter file = File.CreateText(path))
+            using (StreamWriter sw = File.CreateText(path))
             {
-                JsonSerializer serializer = new JsonSerializer();
-                serializer.PreserveReferencesHandling = PreserveReferencesHandling.Objects;
-                serializer.ReferenceLoopHandling = ReferenceLoopHandling.Serialize;
-                serializer.Serialize(file, scenes);
+                string JSONToWrite = JsonConvert.SerializeObject(scenes, Formatting.Indented, new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.Auto,
+                    PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+                    ReferenceLoopHandling = ReferenceLoopHandling.Serialize
+                });
+                sw.WriteLine();
             }
         }
 
@@ -71,7 +70,12 @@ namespace Scenes
             using (StreamReader sr = new StreamReader(path))
             {
                 string json = sr.ReadToEnd();
-                scenes = JsonConvert.DeserializeObject<List<Scene>>(json);
+                scenes = JsonConvert.DeserializeObject<List<Scene>>(json, new JsonSerializerSettings
+                {
+                    TypeNameHandling = TypeNameHandling.Auto,
+                    PreserveReferencesHandling = PreserveReferencesHandling.Objects,
+                    ReferenceLoopHandling = ReferenceLoopHandling.Serialize
+                });
             }
         }
     }
