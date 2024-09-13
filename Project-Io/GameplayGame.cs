@@ -3,49 +3,76 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Objects;
-using Project_Io.Scenes;
+using Scenes;
 using System.Collections.Generic;
+using System.IO;
 
 namespace Project_Io
 {
+    struct KeyboardHandler
+    {
+        public static KeyboardState currentKeyboard;
+        public static KeyboardState previousKeyboard;
+
+        public static void Start()
+        {
+            currentKeyboard = Keyboard.GetState();
+            previousKeyboard = new KeyboardState();
+        }
+
+        public static void Update()
+        {
+            previousKeyboard = currentKeyboard;
+            currentKeyboard = Keyboard.GetState();
+        }
+
+        public static bool IsKeyPressed(Keys key)
+        {
+            if (currentKeyboard.IsKeyDown(key) && !previousKeyboard.IsKeyDown(key))
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+    }
+
     public class GameplayGame : Game
     {
+        public GraphicsDeviceManager grDeviceManager { get; set; }
+
         Point screenSize;
 
-        Scene currentScene;
+        SceneManager sceneManager;
 
         public GameplayGame()
         {
             screenSize = new Point(1920, 1080);
-
-            Camera camera = new Camera(this, screenSize, new Vector2(16, 9));
+            grDeviceManager = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
-
-            camera.backgroundColour = Color.Black;
-
-            Transform transform = new Transform(Vector2.Zero);
-
-            List<Component> cameraComponents = new List<Component>() { camera, transform };
-            currentScene = new Scene("StartScene", 0);
-            currentScene.AddGameObject(new GameObject("MainCamera", cameraComponents));
         }
 
         protected override void Initialize()
         {
-            currentScene.FindGameObjectWithComponent<Camera>().FindComponent<Camera>().graphicsDevice = GraphicsDevice;
+            sceneManager = new SceneManager();
 
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
-            SpriteFont mediumFont = Content.Load<SpriteFont>("Fonts/Medium Font");
+            sceneManager.LoadScenesFromJSON(Path.Combine(Content.RootDirectory, @"JSON Files\Scenes.json"));
 
-            currentScene.FindGameObjectWithComponent<Camera>().FindComponent<Camera>().spriteBatch = new SpriteBatch(GraphicsDevice);
+            Camera camera = sceneManager.GetCurrentScene().FindGameObjectWithComponent<Camera>().FindComponent<Camera>();
 
-            currentScene.AddGameObject(new GameObject("TestGameObject", new List<Component>() { new Transform(new Vector2(3, 2)), new Text("Test", mediumFont), new PlayerController() }));
-            currentScene.AddGameObject(new GameObject("Test2GameObject", new List<Component>() { new Transform(new Vector2(-3, -2)), new Text("Test2", mediumFont) }));
+            camera.grDeviceManager = grDeviceManager;
+            camera.graphicsDevice = GraphicsDevice;
+
+
+            KeyboardHandler.Start();
         }
 
         protected override void Update(GameTime gameTime)
@@ -53,7 +80,14 @@ namespace Project_Io
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed || Keyboard.GetState().IsKeyDown(Keys.Escape))
                 Exit();
 
-            currentScene.Update(gameTime);
+            KeyboardHandler.Update();
+
+            if (KeyboardHandler.IsKeyPressed(Keys.S) && KeyboardHandler.currentKeyboard.IsKeyDown(Keys.LeftControl))
+            {
+                sceneManager.SaveScenesToJSON(Path.Combine(Content.RootDirectory, @"JSON Files\Scenes.json"));
+            }
+
+            sceneManager.UpdateCurrentScene();
 
             base.Update(gameTime);
         }
@@ -61,7 +95,7 @@ namespace Project_Io
         protected override void Draw(GameTime gameTime)
         {
 
-            currentScene.FindGameObjectWithComponent<Camera>().FindComponent<Camera>().Draw();
+            sceneManager.GetCurrentScene().FindGameObjectWithComponent<Camera>().FindComponent<Camera>().Draw();
 
             base.Draw(gameTime);
         }

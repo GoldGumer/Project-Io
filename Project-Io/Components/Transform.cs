@@ -1,13 +1,17 @@
 ﻿using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 
 
 namespace Components
 {
+    [JsonObject("Transform")]
     internal class Transform : Component
     {
+        [JsonProperty("position")]
         public Vector2 position { get; set; }
+        [JsonProperty("drawOrder")]
         public int drawOrder { get; set; }
 
         public Transform(Vector2 _position = default, int _drawOrder = 0)
@@ -26,12 +30,12 @@ namespace Components
             
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
             
         }
 
-        public override void LateUpdate(GameTime gameTime)
+        public override void LateUpdate()
         {
             
         }

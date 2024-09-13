@@ -2,16 +2,22 @@
 using Objects;
 using Components;
 using System;
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.Linq;
+using System.IO;
 
-namespace Project_Io.Scenes
+namespace Scenes
 {
+    [JsonObject("Scene")]
     internal class Scene
     {
-        protected string name;
-        protected int id;
-        protected List<GameObject> gameObjects;
+        [JsonProperty("name")]
+        public string name { get; set; }
+        [JsonProperty("id")]
+        public int id { get; set; }
+        [JsonProperty("gameObjects")]
+        public List<GameObject> gameObjects { get; }
 
         public Scene(string _name = "DefaultScene", int _id = -1)
         {
@@ -25,13 +31,15 @@ namespace Project_Io.Scenes
             }
         }
 
-        public void Update(GameTime gameTime)
+        public void Update()
         {
             foreach (GameObject gameObject in gameObjects) 
             { 
-                gameObject.Update(gameTime);
+                gameObject.Update();
             }
         }
+
+        
 
         public void AddGameObject(GameObject gameObject)
         {
@@ -81,7 +89,5 @@ namespace Project_Io.Scenes
         {
             return gameObjects.OfType<T>().ToList();
         }
-
-        public List<GameObject> GetGameObjects() { return gameObjects; }
     }
 }

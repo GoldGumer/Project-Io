@@ -1,24 +1,29 @@
 ﻿using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json;
 using Objects;
-using Project_Io.Scenes;
+using Scenes;
 using System;
 using System.Collections.Generic;
 
 namespace Components
 {
+    [JsonObject("Camera")]
     internal class Camera : Component
     {
-        public GraphicsDeviceManager grDeviceManager;
-        public GraphicsDevice graphicsDevice;
-        public SpriteBatch spriteBatch;
-        public Vector2 viewSize;
-        public Color backgroundColour;
+        [JsonIgnore]
+        public GraphicsDeviceManager grDeviceManager { get; set; }
+        [JsonIgnore]
+        public GraphicsDevice graphicsDevice { get; set; }
+        [JsonIgnore]
+        public SpriteBatch spriteBatch { get; set; }
+        [JsonProperty("viewSize")]
+        public Vector2 viewSize { get; set; }
+        [JsonProperty("backgroundColour")]
+        public Color backgroundColour { get; set; }
 
-        public Camera(Game game = default, Point screenSize = default, Vector2 _viewSize = default)
+        public Camera(Point screenSize = default, Vector2 _viewSize = default)
         {
-            grDeviceManager = new GraphicsDeviceManager(game);
-
             viewSize = new Vector2(16, 9);
 
             UpdateBackBufferSize(screenSize);
@@ -35,12 +40,12 @@ namespace Components
             
         }
 
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
             
         }
 
-        public override void LateUpdate(GameTime gameTime)
+        public override void LateUpdate()
         {
             
         }

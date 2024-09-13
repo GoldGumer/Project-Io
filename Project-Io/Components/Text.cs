@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
+using Newtonsoft.Json;
 
 namespace Components
 {
+    [JsonObject("Text")]
     internal class Text : Component
     {
+        [JsonProperty("text")]
         public string text { get; set; }
+        [JsonProperty("font")]
         public SpriteFont font { get; set; }
 
         public Text(string _text = "DEFAULT", SpriteFont _font = default)
@@ -24,11 +28,11 @@ namespace Components
         {
             
         }
-        public override void Update(GameTime gameTime)
+        public override void Update()
         {
 
         }
-        public override void LateUpdate(GameTime gameTime)
+        public override void LateUpdate()
         {
             
         }

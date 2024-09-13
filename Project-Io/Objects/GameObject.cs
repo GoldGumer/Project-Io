@@ -3,16 +3,21 @@ using System;
 using System.Collections.Generic;
 using Components;
 using System.Linq;
-using Project_Io.Scenes;
+using Scenes;
+using Newtonsoft.Json;
 
 
 namespace Objects
 {
+    [JsonObject("GameObject")]
     internal class GameObject
     {
+        [JsonProperty("name")]
         public string name { get; set; }
+        [JsonProperty("scene")]
         public Scene scene { get; set; }
-        protected List<Component> components;
+        [JsonProperty("components")]
+        protected List<Component> components { get; set; }
 
         public GameObject(string _name = "DefaultGameObject", List<Component> _components = default)
         {
@@ -36,18 +41,18 @@ namespace Objects
             }
         }
 
-        public void Update(GameTime gameTime)
+        public void Update()
         {
             if (components.Count > 0)
             {
                 foreach (var component in components)
                 {
-                    component.Update(gameTime);
+                    component.Update();
                 }
 
                 foreach (var component in components)
                 {
-                    component.LateUpdate(gameTime);
+                    component.LateUpdate();
                 }
             }
         }
