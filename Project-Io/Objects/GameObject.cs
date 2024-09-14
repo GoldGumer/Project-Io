@@ -21,10 +21,11 @@ namespace Objects
 
         public GameObject()
         {
-
+            name = "NewGameObject";
+            components = new List<Component>();
         }
 
-        public GameObject(string _name = "DefaultGameObject", List<Component> _components = default)
+        public GameObject(string _name, List<Component> _components)
         {
             components = _components;
 

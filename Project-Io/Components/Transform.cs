@@ -16,7 +16,8 @@ namespace Components
 
         public Transform()
         {
-
+            position = Vector2.Zero;
+            drawOrder = 0;
         }
 
         public Transform(Vector2 _position = default, int _drawOrder = 0)

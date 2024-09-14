@@ -24,10 +24,11 @@ namespace Components
 
         public Camera()
         {
-
+            viewSize = new Vector2(1, 1);
+            backgroundColour = Color.BlanchedAlmond;
         }
 
-        public Camera(Vector2 _viewSize = default, Color _backgroundColour = default)
+        public Camera(Vector2 _viewSize, Color _backgroundColour)
         {
             viewSize = new Vector2(16, 9);
 

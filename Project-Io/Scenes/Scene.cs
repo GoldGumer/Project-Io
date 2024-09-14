@@ -21,10 +21,11 @@ namespace Scenes
 
         public Scene()
         {
-
+            name = "NewScene";
+            id = -1;
         }
 
-        public Scene(string _name = "DefaultScene", int _id = -1)
+        public Scene(string _name, int _id)
         {
             name = _name;
             id = _id;

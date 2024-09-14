@@ -16,10 +16,10 @@ namespace Components
 
         public Text()
         {
-
+            text = "Default";
         }
 
-        public Text(string _text = "DEFAULT", SpriteFont _font = default)
+        public Text(string _text, SpriteFont _font)
         {
             text = _text;
             font = _font;
