@@ -13,7 +13,7 @@ namespace Project_Io
     struct KeyboardHandler
     {
         public static KeyboardState currentKeyboard;
-        public static KeyboardState previousKeyboard;
+        static KeyboardState previousKeyboard;
 
         public static void Start()
         {
@@ -48,6 +48,8 @@ namespace Project_Io
 
         SceneManager sceneManager;
 
+        EditModeUI.EditUIDropDownCollection editModeUICollection;
+
         public GameplayGame()
         {
             screenSize = new Point(1920, 1080);
@@ -60,17 +62,19 @@ namespace Project_Io
 
         protected override void Initialize()
         {
-            Scene scene = new Scene("StartScene", 0);
-            scene.AddGameObject(new GameObject("MainCamera", new List<Component>() { new Camera(new Vector2(16, 9), Color.Black), new Transform(Vector2.Zero) }));
-
-            sceneManager = new SceneManager(0, new List<Scene>() { scene });
-
+            editModeUICollection = new EditModeUI.EditUIDropDownCollection();
 
             base.Initialize();
         }
 
         protected override void LoadContent()
         {
+            sceneManager = new SceneManager(this, 0, new List<Scene>());
+            Scene scene = new Scene("StartScene", sceneManager, 0);
+            scene.AddGameObject(new GameObject("MainCamera", scene, new List<Component>() { new Camera(new Vector2(16, 9), Color.Black), new Transform(Vector2.Zero) }));
+
+            sceneManager.AddScene(scene);
+
             sceneManager.LoadScenesFromJSON(Path.Combine(Content.RootDirectory, @"JSON Files\Scenes.json"));
 
             Camera camera = sceneManager.GetCurrentScene().FindGameObjectWithComponent<Camera>().FindComponent<Camera>();

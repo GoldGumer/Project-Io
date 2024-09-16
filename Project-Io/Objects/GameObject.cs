@@ -5,10 +5,13 @@ using Components;
 using System.Linq;
 using Scenes;
 using Newtonsoft.Json;
+using Microsoft.Xna.Framework.Graphics;
+using EditModeUI;
 
 
 namespace Objects
 {
+    [EditUIDropDown("Create/GameObject")]
     [JsonObject("GameObject")]
     internal class GameObject
     {
@@ -22,13 +25,19 @@ namespace Objects
         public GameObject()
         {
             name = "NewGameObject";
-            components = new List<Component>();
+            components = new List<Component>() { new Transform() };
         }
 
-        public GameObject(string _name, List<Component> _components)
+        public GameObject(Scene _scene)
+        {
+            name = "NewGameObject";
+            components = new List<Component>() { new Transform(), new Text("Default", scene.sceneManager.game.Content.Load<SpriteFont>("Fonts/Medium Font")) };
+        }
+
+        public GameObject(string _name, Scene _scene, List<Component> _components)
         {
             components = _components;
-
+            scene = _scene;
             name = _name;
 
             if (components.Count > 0)

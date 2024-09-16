@@ -16,6 +16,8 @@ namespace Scenes
         public string name { get; set; }
         [JsonProperty("id")]
         public int id { get; set; }
+        [JsonIgnore]
+        public SceneManager sceneManager { get; set; }
         [JsonProperty("gameObjects")]
         public List<GameObject> gameObjects { get; set; }
 
@@ -25,9 +27,10 @@ namespace Scenes
             id = -1;
         }
 
-        public Scene(string _name, int _id)
+        public Scene(string _name, SceneManager _sceneManager, int _id)
         {
             name = _name;
+            sceneManager = _sceneManager;
             id = _id;
             gameObjects = new List<GameObject>();
 

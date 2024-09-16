@@ -1,11 +1,9 @@
-﻿using Newtonsoft.Json;
+﻿using Microsoft.Xna.Framework;
+using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Principal;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Scenes
 {
@@ -15,8 +13,11 @@ namespace Scenes
 
         List<Scene> scenes;
 
-        public SceneManager(int _currentSceneID = 0, List<Scene> _scenes = default)
+        public Game game { get; }
+
+        public SceneManager(Game _game, int _currentSceneID = 0, List<Scene> _scenes = default)
         {
+            game = _game;
             currentSceneID = _currentSceneID;
             scenes = _scenes;
         }
@@ -43,6 +44,7 @@ namespace Scenes
 
         public void AddScene(Scene scene)
         {
+            scene.sceneManager = this;
             scenes.Add(scene);
         }
 
@@ -61,7 +63,7 @@ namespace Scenes
                     PreserveReferencesHandling = PreserveReferencesHandling.Objects,
                     ReferenceLoopHandling = ReferenceLoopHandling.Serialize
                 });
-                sw.WriteLine();
+                sw.WriteLine(JSONToWrite);
             }
         }
 
@@ -77,6 +79,8 @@ namespace Scenes
                     ReferenceLoopHandling = ReferenceLoopHandling.Serialize
                 });
             }
+
+            foreach (Scene scene in scenes) { scene.sceneManager = this; }
         }
     }
 }
