@@ -91,7 +91,15 @@ namespace Components
             {
                 foreach (GameObject gameObject in gameObjects)
                 {
-                    spriteBatch.DrawString(gameObject.FindComponent<Text>().font, gameObject.FindComponent<Text>().text, WorldToScreen(gameObject.FindComponent<Transform>().position), Color.White);
+                    spriteBatch.DrawString(gameObject.FindComponent<Text>().font,
+                        gameObject.FindComponent<Text>().text,
+                        WorldToScreen(gameObject.FindComponent<Transform>().position),
+                        Color.White,
+                        gameObject.FindComponent<Transform>().rotation,
+                        Vector2.Zero,
+                        gameObject.FindComponent<Transform>().scale,
+                        new SpriteEffects(),
+                        gameObject.FindComponent<Transform>().drawOrder);
                 }
             }
 

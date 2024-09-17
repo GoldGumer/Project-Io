@@ -18,6 +18,18 @@ namespace EditModeUI
             
         }
 
+        public Type GetFirstGameObject() 
+        {
+            if (gameObjects.Length > 0)
+            {
+                return gameObjects[0];
+            }
+            else 
+            {
+                return null;
+            }
+        }
+
         IEnumerable<Type> GetTypes(Assembly assembly)
         {
             foreach (Type type in assembly.GetTypes())

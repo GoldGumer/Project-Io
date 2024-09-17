@@ -1,5 +1,8 @@
-﻿using Microsoft.Xna.Framework;
+﻿using Components;
+using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
+using Objects;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -80,7 +83,19 @@ namespace Scenes
                 });
             }
 
-            foreach (Scene scene in scenes) { scene.sceneManager = this; }
+            foreach (Scene scene in scenes) 
+            {
+                scene.sceneManager = this;
+                foreach (GameObject gameObject in scene.gameObjects)
+                {
+                    if (gameObject.components.Count < 1)
+                    {
+                        gameObject.AddComponent(new Transform(Vector2.Zero, Vector2.One, 0.0f, 0));
+                        gameObject.AddComponent(new Text("Default", "Fonts/Medium Font"));
+                    }
+                    gameObject.Start();
+                }
+            }
         }
     }
 }

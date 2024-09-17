@@ -11,6 +11,10 @@ namespace Components
     {
         [JsonProperty("position")]
         public Vector2 position { get; set; }
+        [JsonProperty("scale")]
+        public Vector2 scale { get; set; }
+        [JsonProperty("rotation")]
+        public float rotation { get; set; }
         [JsonProperty("drawOrder")]
         public int drawOrder { get; set; }
 
@@ -20,10 +24,12 @@ namespace Components
             drawOrder = 0;
         }
 
-        public Transform(Vector2 _position = default, int _drawOrder = 0)
+        public Transform(Vector2 _position = default, Vector2 _scale = default, float _rotation = default, int _drawOrder = 0)
         {
             position = _position;
-            drawOrder = 0;
+            scale = _scale;
+            rotation = _rotation;
+            drawOrder = _drawOrder;
         }
 
         public override void Start()

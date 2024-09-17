@@ -11,7 +11,9 @@ namespace Components
     {
         [JsonProperty("text")]
         public string text { get; set; }
-        [JsonProperty("font")]
+        [JsonProperty("directory")]
+        public string fontDirectory { get; set; }
+        [JsonIgnore]
         public SpriteFont font { get; set; }
 
         public Text()
@@ -19,15 +21,15 @@ namespace Components
             text = "Default";
         }
 
-        public Text(string _text, SpriteFont _font)
+        public Text(string _text, string _fontDirectory)
         {
             text = _text;
-            font = _font;
+            fontDirectory = _fontDirectory;
         }
 
         public override void Start()
         {
-
+            font = gameObject.scene.sceneManager.game.Content.Load<SpriteFont>(fontDirectory);
         }
         public override void LateStart()
         {

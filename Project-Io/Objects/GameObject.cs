@@ -20,18 +20,18 @@ namespace Objects
         [JsonProperty("scene")]
         public Scene scene { get; set; }
         [JsonProperty("components")]
-        protected List<Component> components { get; set; }
+        public List<Component> components { get; set; }
 
         public GameObject()
         {
             name = "NewGameObject";
-            components = new List<Component>() { new Transform() };
+            components = new List<Component>();
         }
 
         public GameObject(Scene _scene)
         {
             name = "NewGameObject";
-            components = new List<Component>() { new Transform(), new Text("Default", scene.sceneManager.game.Content.Load<SpriteFont>("Fonts/Medium Font")) };
+            components = new List<Component>() { new Transform(), new Text("Default", "Fonts/Medium Font") };
         }
 
         public GameObject(string _name, Scene _scene, List<Component> _components)
@@ -40,6 +40,11 @@ namespace Objects
             scene = _scene;
             name = _name;
 
+            Start();
+        }
+
+        public void Start()
+        {
             if (components.Count > 0)
             {
                 foreach (var component in components)
@@ -74,6 +79,8 @@ namespace Objects
 
         public void AddComponent(Component component)
         {
+            component.gameObject = this;
+
             component.Start();
             component.LateStart();
 
