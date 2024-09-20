@@ -6,17 +6,20 @@ using Objects;
 using Scenes;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Reflection;
 
 namespace Project_Io
 {
-    internal class GameplayGame : IoGame
+    internal class EditModeGame : IoGame
     {
-        public GameplayGame()
+        EditModeUI.EditUIDropDownCollection editModeUICollection;
+
+        public EditModeGame()
         {
             screenSize = new Point(1920, 1080);
 
-
+            
             grDeviceManager = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
             IsMouseVisible = true;
@@ -24,6 +27,7 @@ namespace Project_Io
 
         protected override void Initialize()
         {
+            editModeUICollection = new EditModeUI.EditUIDropDownCollection();
 
             base.Initialize();
         }
@@ -31,6 +35,10 @@ namespace Project_Io
         protected override void LoadContent()
         {
             sceneManager = new SceneManager(this, 0, new List<Scene>());
+            Scene scene = new Scene("StartScene", sceneManager, 0);
+            scene.AddGameObject(new GameObject("MainCamera", scene, new List<Component>() { new Camera(new Vector2(16, 9), Color.Black), new Transform(Vector2.Zero) }));
+
+            sceneManager.AddScene(scene);
 
             sceneManager.LoadScenesFromJSON(Path.Combine(Content.RootDirectory, @"JSON Files\Scenes.json"));
 
@@ -50,6 +58,16 @@ namespace Project_Io
 
             InputHandler.Update();
 
+            if (InputHandler.IsKeyPressed(Keys.S) && InputHandler.currentKeyboard.IsKeyDown(Keys.LeftControl))
+            {
+                sceneManager.SaveScenesToJSON(Path.Combine(Content.RootDirectory, @"JSON Files\Scenes.json"));
+            }
+
+            if (InputHandler.IsKeyPressed(Keys.Tab) && InputHandler.currentKeyboard.IsKeyDown(Keys.LeftShift))
+            {
+                sceneManager.IsShowingSceneObjects = !sceneManager.IsShowingSceneObjects;
+            }
+
             sceneManager.GetCurrentScene().Update();
 
             base.Update(gameTime);
@@ -57,8 +75,19 @@ namespace Project_Io
 
         protected override void Draw(GameTime gameTime)
         {
+            spriteBatch.Begin();
 
-            sceneManager.GetCurrentScene().FindGameObjectWithComponent<Camera>().FindComponent<Camera>().Draw(spriteBatch);
+            if (sceneManager.IsShowingSceneObjects)
+            {
+                sceneManager.GetCurrentScene().DrawSceneContent(spriteBatch);
+            }
+            else
+            {
+                sceneManager.GetCurrentScene().FindGameObjectWithComponent<Camera>().FindComponent<Camera>().Draw(spriteBatch);
+            }
+
+
+            spriteBatch.End();
 
             base.Draw(gameTime);
         }

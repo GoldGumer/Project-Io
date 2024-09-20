@@ -31,6 +31,7 @@ namespace Objects
         public GameObject(Scene _scene)
         {
             name = "NewGameObject";
+            scene = _scene;
             components = new List<Component>() { new Transform(), new Text("Default", "Fonts/Medium Font") };
         }
 
@@ -75,6 +76,17 @@ namespace Objects
                     component.LateUpdate();
                 }
             }
+        }
+
+        public void DrawObjectContent(SpriteBatch spriteBatch)
+        {
+            SpriteFont font = scene.sceneManager.game.Content.Load<SpriteFont>("Fonts/Medium Font");
+
+            string[,] strings = new string[
+                scene.sceneManager.game.grDeviceManager.PreferredBackBufferHeight / font.LineSpacing,
+                scene.sceneManager.game.grDeviceManager.PreferredBackBufferWidth / (int)font.MeasureString("25===+====+====+====+====").X];
+
+            scene.DrawStrings(spriteBatch, strings);
         }
 
         public void AddComponent(Component component)

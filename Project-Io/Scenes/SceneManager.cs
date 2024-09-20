@@ -3,6 +3,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
 using Objects;
+using Project_Io;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -16,9 +17,11 @@ namespace Scenes
 
         List<Scene> scenes;
 
-        public Game game { get; }
+        public IoGame game { get; private set; }
 
-        public SceneManager(Game _game, int _currentSceneID = 0, List<Scene> _scenes = default)
+        public bool IsShowingSceneObjects { get; set; }
+
+        public SceneManager(IoGame _game, int _currentSceneID = 0, List<Scene> _scenes = default)
         {
             game = _game;
             currentSceneID = _currentSceneID;
@@ -90,7 +93,7 @@ namespace Scenes
                 {
                     if (gameObject.components.Count < 1)
                     {
-                        gameObject.AddComponent(new Transform(Vector2.Zero, Vector2.One, 0.0f, 0));
+                        gameObject.AddComponent(new Transform(Vector2.Zero, Vector2.One, 0.0f, Vector2.Zero, 0));
                         gameObject.AddComponent(new Text("Default", "Fonts/Medium Font"));
                     }
                     gameObject.Start();

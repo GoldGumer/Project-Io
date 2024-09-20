@@ -2,6 +2,7 @@
 using Microsoft.Xna.Framework.Graphics;
 using Newtonsoft.Json;
 using Objects;
+using Project_Io;
 using Scenes;
 using System;
 using System.Collections.Generic;
@@ -15,8 +16,6 @@ namespace Components
         public GraphicsDeviceManager grDeviceManager { get; set; }
         [JsonIgnore]
         public GraphicsDevice graphicsDevice { get; set; }
-        [JsonIgnore]
-        public SpriteBatch spriteBatch { get; set; }
         [JsonProperty("viewSize")]
         public Vector2 viewSize { get; set; }
         [JsonProperty("backgroundColour")]
@@ -38,7 +37,8 @@ namespace Components
 
         public override void Start()
         {
-            
+            grDeviceManager = gameObject.scene.sceneManager.game.grDeviceManager;
+            graphicsDevice = gameObject.scene.sceneManager.game.GraphicsDevice;
         }
 
         public override void LateStart()
@@ -79,11 +79,9 @@ namespace Components
             grDeviceManager.ApplyChanges();
         }
 
-        public void Draw()
+        public void Draw(SpriteBatch spriteBatch)
         {
             graphicsDevice.Clear(backgroundColour);
-
-            spriteBatch.Begin();
 
             List<GameObject> gameObjects = gameObject.scene.FindGameObjectsWithComponent<Text>();
 
@@ -96,14 +94,12 @@ namespace Components
                         WorldToScreen(gameObject.FindComponent<Transform>().position),
                         Color.White,
                         gameObject.FindComponent<Transform>().rotation,
-                        Vector2.Zero,
+                        gameObject.FindComponent<Transform>().pivot,
                         gameObject.FindComponent<Transform>().scale,
                         new SpriteEffects(),
                         gameObject.FindComponent<Transform>().drawOrder);
                 }
             }
-
-            spriteBatch.End();
         }
     }
 }

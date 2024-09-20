@@ -15,6 +15,8 @@ namespace Components
         public Vector2 scale { get; set; }
         [JsonProperty("rotation")]
         public float rotation { get; set; }
+        [JsonProperty("pivot")]
+        public Vector2 pivot { get; set; }
         [JsonProperty("drawOrder")]
         public int drawOrder { get; set; }
 
@@ -24,11 +26,12 @@ namespace Components
             drawOrder = 0;
         }
 
-        public Transform(Vector2 _position = default, Vector2 _scale = default, float _rotation = default, int _drawOrder = 0)
+        public Transform(Vector2 _position = default, Vector2 _scale = default, float _rotation = default, Vector2 _pivot = default, int _drawOrder = 0)
         {
             position = _position;
             scale = _scale;
             rotation = _rotation;
+            pivot = _pivot;
             drawOrder = _drawOrder;
         }
 
