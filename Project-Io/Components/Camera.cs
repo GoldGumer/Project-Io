@@ -29,7 +29,7 @@ namespace Components
 
         public Camera(Vector2 _viewSize, Color _backgroundColour)
         {
-            viewSize = new Vector2(16, 9);
+            viewSize = _viewSize;
 
             backgroundColour = _backgroundColour;
         }

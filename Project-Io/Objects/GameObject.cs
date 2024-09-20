@@ -78,17 +78,6 @@ namespace Objects
             }
         }
 
-        public void DrawObjectContent(SpriteBatch spriteBatch)
-        {
-            SpriteFont font = scene.sceneManager.game.Content.Load<SpriteFont>("Fonts/Medium Font");
-
-            string[,] strings = new string[
-                scene.sceneManager.game.grDeviceManager.PreferredBackBufferHeight / font.LineSpacing,
-                scene.sceneManager.game.grDeviceManager.PreferredBackBufferWidth / (int)font.MeasureString("25===+====+====+====+====").X];
-
-            scene.DrawStrings(spriteBatch, strings);
-        }
-
         public void AddComponent(Component component)
         {
             component.gameObject = this;

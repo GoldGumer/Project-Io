@@ -49,60 +49,6 @@ namespace Scenes
             }
         }
 
-        public void DrawSceneContent(SpriteBatch spriteBatch)
-        {
-            SpriteFont font = sceneManager.game.Content.Load<SpriteFont>("Fonts/Medium Font");
-
-            string[,] strings = new string[
-                sceneManager.game.grDeviceManager.PreferredBackBufferHeight / font.LineSpacing,
-                sceneManager.game.grDeviceManager.PreferredBackBufferWidth / (int)font.MeasureString("25===+====+====+====+====").X];
-
-            int i = 0, j = 0;
-            foreach (GameObject gameObject in gameObjects)
-            {
-                strings[i, j] = gameObject.name;
-
-                i++;
-
-                if (i > strings.GetLength(0))
-                {
-                    j++;
-                    i = 0;
-                }
-
-                if (strings.Length > (i + (j * strings.GetLength(0))))
-                {
-                    break;
-                }
-            }
-
-            DrawStrings(spriteBatch, strings);
-        }
-
-        public void DrawStrings(SpriteBatch spriteBatch, string[,] strings)
-        {
-            sceneManager.game.GraphicsDevice.Clear(Color.Black);
-
-            SpriteFont font = sceneManager.game.Content.Load<SpriteFont>("Fonts/Medium Font");
-
-            int i = 0, j = 0;
-            while (strings.Length > (i + (j * strings.GetLength(0))))
-            {
-                spriteBatch.DrawString(
-                    font,
-                    strings[i, j],
-                    new Vector2(j * font.MeasureString("25===+====+====+====+====").X, i * font.LineSpacing),
-                    Color.White);
-                i++;
-
-                if (i > strings.GetLength(0))
-                {
-                    j++;
-                    i = 0;
-                }
-            }
-        }
-
         public void AddGameObject(GameObject gameObject)
         {
             gameObject.scene = this;
