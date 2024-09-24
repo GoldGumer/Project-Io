@@ -15,6 +15,8 @@ namespace Project_Io
     internal class EditModeGame : IoGame
     {
         EditModeUI.EditUIDropDownCollection editModeUICollection;
+        int cursorPos = 0;
+        object currentDisplayedObject;
 
         public EditModeGame()
         {
@@ -50,6 +52,8 @@ namespace Project_Io
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             InputHandler.Start();
+
+            currentDisplayedObject = sceneManager.GetCurrentScene();
         }
 
         protected override void Update(GameTime gameTime)
@@ -69,10 +73,45 @@ namespace Project_Io
                 sceneManager.IsShowingSceneObjects = !sceneManager.IsShowingSceneObjects;
             }
 
+            if (sceneManager.IsShowingSceneObjects)
+            {
+                cursorPos += (InputHandler.IsKeyPressed(Keys.Down) ? 1 : 0) + ((InputHandler.IsKeyPressed(Keys.Up)) ? -1 : 0);
+
+                cursorPos = Math.Clamp(cursorPos, 0, currentDisplayedObject.GetType().GetProperties().Length - 1);
+
+                if (InputHandler.IsKeyPressed(Keys.Enter))
+                {
+                    if (currentDisplayedObject.GetType().GetProperties()[cursorPos].GetType().IsGenericType)
+                    {
+                        currentDisplayedObject = currentDisplayedObject.GetType().GetProperties()[cursorPos];
+                    }
+                }
+            }
+
             sceneManager.GetCurrentScene().Update();
 
             base.Update(gameTime);
         }
+
+        protected override void Draw(GameTime gameTime)
+        {
+            spriteBatch.Begin();
+
+            if (sceneManager.IsShowingSceneObjects)
+            {
+                DrawObject(currentDisplayedObject);
+            }
+            else
+            {
+                sceneManager.GetCurrentScene().FindGameObjectWithComponent<Camera>().FindComponent<Camera>().Draw(spriteBatch);
+            }
+
+
+            spriteBatch.End();
+
+            base.Draw(gameTime);
+        }
+
 
         void DrawObject(object obj)
         {
@@ -80,26 +119,20 @@ namespace Project_Io
 
             List<string> strings = new List<string>();
 
+            int i = 0;
+
             foreach (var prop in obj.GetType().GetProperties())
             {
-                Type testtype = prop.PropertyType;
+                string stringToAdd = string.Format("{0}| {1} = {2}", i, prop.Name, prop.GetValue(obj, null));
 
-                if (prop.PropertyType.IsGenericType)
+                if (cursorPos == i)
                 {
-                    strings.Add(prop.Name + " = {");
-
-                    var whatever = prop.PropertyType.GenericTypeArguments;
-
-                    object listObj = prop.GetValue(obj, null);
-
-                    strings.Add(whatever.ToString());
-
-                    strings.Add("}");
+                    stringToAdd += "<";
                 }
-                else
-                {
-                    strings.Add(prop.Name + " = " + prop.GetValue(obj, null));
-                }
+
+                strings.Add(stringToAdd);
+
+                i++;
             }
 
             DrawStrings(strings);
@@ -117,7 +150,7 @@ namespace Project_Io
                 spriteBatch.DrawString(
                     font,
                     strings.ToArray()[i + (j * strings.Count())],
-                    new Vector2(j * font.MeasureString("50===+====+====+====+====+====+====+====+====+====").X, i * font.LineSpacing),
+                    new Vector2(j * font.MeasureString("1").X * 50, i * font.LineSpacing),
                     Color.White);
                 i++;
 
@@ -127,25 +160,6 @@ namespace Project_Io
                     i = 0;
                 }
             }
-        }
-
-        protected override void Draw(GameTime gameTime)
-        {
-            spriteBatch.Begin();
-
-            if (sceneManager.IsShowingSceneObjects)
-            {
-                DrawObject(sceneManager.GetCurrentScene());
-            }
-            else
-            {
-                sceneManager.GetCurrentScene().FindGameObjectWithComponent<Camera>().FindComponent<Camera>().Draw(spriteBatch);
-            }
-
-
-            spriteBatch.End();
-
-            base.Draw(gameTime);
         }
     }
 }
