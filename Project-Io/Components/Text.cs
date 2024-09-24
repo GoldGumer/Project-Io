@@ -21,7 +21,7 @@ namespace Components
             text = "Default";
         }
 
-        public Text(string _text, string _fontDirectory)
+        public Text(string _text = default, string _fontDirectory = default)
         {
             text = _text;
             fontDirectory = _fontDirectory;

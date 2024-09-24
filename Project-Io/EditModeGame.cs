@@ -5,7 +5,9 @@ using Microsoft.Xna.Framework.Input;
 using Objects;
 using Scenes;
 using System;
+using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel.Design;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -15,7 +17,6 @@ namespace Project_Io
     internal class EditModeGame : IoGame
     {
         EditModeUI.EditUIDropDownCollection editModeUICollection;
-        int cursorPos = 0;
         object currentDisplayedObject;
 
         public EditModeGame()
@@ -48,12 +49,13 @@ namespace Project_Io
             Camera camera = sceneManager.GetCurrentScene().FindGameObjectWithComponent<Camera>().FindComponent<Camera>();
             camera.UpdateBackBufferSize(screenSize);
 
+            sceneManager.GetCurrentScene().AddGameObject(new Player("Player", sceneManager.GetCurrentScene()));
 
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
             InputHandler.Start();
 
-            currentDisplayedObject = sceneManager.GetCurrentScene();
+            currentDisplayedObject = sceneManager.GetCurrentScene().FindGameObject<Player>().FindComponent<Transform>();
         }
 
         protected override void Update(GameTime gameTime)
@@ -71,21 +73,6 @@ namespace Project_Io
             if (InputHandler.IsKeyPressed(Keys.Tab) && InputHandler.currentKeyboard.IsKeyDown(Keys.LeftShift))
             {
                 sceneManager.IsShowingSceneObjects = !sceneManager.IsShowingSceneObjects;
-            }
-
-            if (sceneManager.IsShowingSceneObjects)
-            {
-                cursorPos += (InputHandler.IsKeyPressed(Keys.Down) ? 1 : 0) + ((InputHandler.IsKeyPressed(Keys.Up)) ? -1 : 0);
-
-                cursorPos = Math.Clamp(cursorPos, 0, currentDisplayedObject.GetType().GetProperties().Length - 1);
-
-                if (InputHandler.IsKeyPressed(Keys.Enter))
-                {
-                    if (currentDisplayedObject.GetType().GetProperties()[cursorPos].GetType().IsGenericType)
-                    {
-                        currentDisplayedObject = currentDisplayedObject.GetType().GetProperties()[cursorPos];
-                    }
-                }
             }
 
             sceneManager.GetCurrentScene().Update();
@@ -115,23 +102,42 @@ namespace Project_Io
 
         void DrawObject(object obj)
         {
-            SpriteFont font = Content.Load<SpriteFont>("Fonts/Medium Font");
-
             List<string> strings = new List<string>();
 
             int i = 0;
 
-            foreach (var prop in obj.GetType().GetProperties())
+            foreach (PropertyInfo prop in obj.GetType().GetProperties())
             {
-                string stringToAdd = string.Format("{0}| {1} = {2}", i, prop.Name, prop.GetValue(obj, null));
-
-                if (cursorPos == i)
+                if (typeof(IEnumerable).IsAssignableFrom(prop.PropertyType) && prop.PropertyType != typeof(string))
                 {
-                    stringToAdd += "<";
+                    strings.Add(string.Format("   {0} = (", prop.Name));
+                    
+                    switch (prop.PropertyType.GenericTypeArguments[0].Name)
+                    {
+                        case "GameObject":
+                            foreach (var item in (List<GameObject>)prop.GetValue(obj, null))
+                            {
+                                strings.Add(string.Format("{0}|   {1}", i, item.name));
+                                i++;
+                            }
+                            break;
+                        case "Component":
+                            foreach (var item in (List<Component>)prop.GetValue(obj, null))
+                            {
+                                strings.Add(string.Format("{0}|   {1}", i, item.GetType().Name));
+                                i++;
+                            }
+                            break;
+                        default:
+                            break;
+                    }
+
+                    strings.Add(string.Format("   )"));
                 }
-
-                strings.Add(stringToAdd);
-
+                else
+                {
+                    strings.Add(string.Format("{0}| {1} = {2}", i, prop.Name, prop.GetValue(obj, null)));
+                }
                 i++;
             }
 
